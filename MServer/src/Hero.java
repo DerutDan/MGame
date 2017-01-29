@@ -1,4 +1,6 @@
-public class Hero {
+import java.io.Serializable;
+
+public class Hero implements Serializable {
     int maxHp = 100;
     int hp = 100;
     int attack = 5;

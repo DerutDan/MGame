@@ -1,3 +1,4 @@
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.Random;
 public class GameBoard {
     Hero P1,P2;
     boolean gameOn = false;
-    ArrayList<GameCard> handP1,handP2 = new ArrayList<>();
+    ArrayList<GameCard> handP1 = new ArrayList<>(),handP2 = new ArrayList<>();
     ArrayList<GameCard> deckP1,deckP2;
     ArrayList<Monster> monsterList = new ArrayList<>();
     ArrayList<Weapon> weaponList = new ArrayList<>();
@@ -17,13 +18,16 @@ public class GameBoard {
     ArrayList<Monster> monstersP1 = new ArrayList<>();
     ArrayList<Monster> monstersP2 = new ArrayList<>();
     ObjectOutputStream oout1,oout2;
+    DataInputStream oin1,oin2;
+    volatile boolean upToDate = false;
+    Thread updater = upDate();
     Random rand = new Random();
-    GameBoard(ObjectOutputStream _oout1,ObjectOutputStream _oout2)
+    GameBoard(ObjectOutputStream _oout1,ObjectOutputStream _oout2, DataInputStream _oin1,DataInputStream _oin2)
     {
         initAll();
         deckP1 = getDeck();
         deckP2 = getDeck();
-        for(int i = 0; i < 5;++i)
+        for(int i = 0; i < StaticVariables.initHandSize;++i)
         {
             handP1.add(takeCard(deckP1));
             handP2.add(takeCard(deckP2));
@@ -34,6 +38,8 @@ public class GameBoard {
 
         oout1 = _oout1;
         oout2 = _oout2;
+        oin1 = _oin1;
+        oin2 = _oin2;
     }
 
 
@@ -132,7 +138,9 @@ public class GameBoard {
     }
     void Phase01()
     {
-        handP1.add(takeCard(deckP1));
+        if(handP1.size() <=StaticVariables.handSize) {
+            handP1.add(takeCard(deckP1));
+        }
         for(int  i = 0 ; i < cMonstersP1.size();++i)
         {
             if(cMonstersP1.get(i).chargeUp())
@@ -141,7 +149,7 @@ public class GameBoard {
                 cMonstersP1.remove(i);
             }
         }
-        toSent1();
+        upToDate = false;
     }
     void Phase11(int cardIndex)
     {
@@ -153,8 +161,7 @@ public class GameBoard {
             case "Weapon" : { P1.equipWeapon((Weapon)out); break;}
             case "Armor" : { P1.equipArmor((Armor)out); break;}
         }
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     void Phase21(int cardIndex)
     {
@@ -164,8 +171,7 @@ public class GameBoard {
         P1.getHit(m.getAt());
         m.getHit(P1.getAt());
         if(!m.isAlive()) monstersP2.remove(cardIndex);
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     void Phase31()
     {
@@ -176,13 +182,14 @@ public class GameBoard {
         }
         P1.getHit(sum);
         if(!P1.isAlive()) gameOn = false;
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     //P2 phases
     void Phase02()
     {
-        handP2.add(takeCard(deckP2));
+        if(handP2.size() <=StaticVariables.handSize){
+            handP2.add(takeCard(deckP2));
+        }
         for(int  i = 0 ; i < cMonstersP2.size();++i)
         {
             if(cMonstersP2.get(i).chargeUp())
@@ -191,7 +198,7 @@ public class GameBoard {
                 cMonstersP2.remove(i);
             }
         }
-        toSent2();
+        upToDate = false;
     }
     void Phase12(int cardIndex)
     {
@@ -203,8 +210,7 @@ public class GameBoard {
             case "Weapon" : { P2.equipWeapon((Weapon)out); break;}
             case "Armor" : { P2.equipArmor((Armor)out); break;}
         }
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     void Phase22(int cardIndex)
     {
@@ -214,8 +220,7 @@ public class GameBoard {
         P2.getHit(m.getAt());
         m.getHit(P2.getAt());
         if(!m.isAlive()) monstersP1.remove(cardIndex);
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     void Phase32()
     {
@@ -226,8 +231,7 @@ public class GameBoard {
         }
         P2.getHit(sum);
         if(!P2.isAlive()) gameOn = false;
-        toSent1();
-        toSent2();
+        upToDate = false;
     }
     //P1: hp def at weap arm cmosterNum AllMonsterIndexes monsterNum AllMonsterIndexes(curhp) P2 hp def at
     void toSent1()
@@ -288,6 +292,21 @@ public class GameBoard {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+    Thread upDate() {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                toSent1();
+                toSent2();
+                upToDate = true;
+            }
+        });
+
+    }
+    public void StartGame()
+    {
 
     }
 

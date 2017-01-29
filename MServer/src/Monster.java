@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Monster extends GameCard {
+public class Monster extends GameCard implements Serializable {
     int hp;
     int at;
     int charge;

@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Created by Danila on 20.01.17.
  */
-public class GameCard {
+public class GameCard  {
     String type; //Monster or potion, wepaon;
     String name;
 

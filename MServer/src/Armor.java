@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Created by Danila on 25.01.17.
  */
-public class Armor extends GameCard {
+public class Armor extends GameCard implements Serializable {
     int def;
     int hpBonus;
     Armor(String _name,int _def,int _hpBonus)

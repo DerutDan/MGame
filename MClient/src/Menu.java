@@ -2,20 +2,25 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Menu extends JFrame {
-    int serverPort = 5555,height,width;
-    String address = "192.168.1.181";
+    private int serverPort = 5555,height,width;
+    private String address = "192.168.1.181";
     Socket socket;
-    JButton findGame,help,cancelFindGame;
-    JLabel label;
-    InetSocketAddress ipAddress;
+    private JButton findGame,help,cancelFindGame;
+    private JLabel waitingLabel;
+    private Thread connectThread;
+    private InetSocketAddress ipAddress;
+    OutputStream sout;
+    InputStream sin;
     volatile boolean isCanceled = false;
     Menu() {
-        height = 773;
-        width = 1280;
+        height = 600;
+        width = 600;
         setFocusable(true);
         setBounds(0, 0, width, height);
         JPanel panel = new JPanel();
@@ -24,31 +29,32 @@ public class Menu extends JFrame {
         findGame = new JButton("Find Game");
         help = new JButton("Help");
         cancelFindGame = new JButton("Cancel");
-        label = new JLabel("Waiting for opponent...",JLabel.CENTER);
+        waitingLabel = new JLabel("Waiting for opponent...",JLabel.CENTER);
         cancelFindGame.setVisible(false);
-        label.setVisible(false);
-        label.setBounds(400,10,200,50);
-        findGame.setBounds(400,10,200,50);
-        help.setBounds(400,80,200,50);
-        cancelFindGame.setBounds(400,80,200,50);
+        waitingLabel.setVisible(false);
+        waitingLabel.setBounds(width/2-100,10,200,50);
+        findGame.setBounds(width/2-100,10,200,50);
+        help.setBounds(width/2-100,80,200,50);
+        cancelFindGame.setBounds(width/2-100,80,200,50);
         ipAddress = new InetSocketAddress(address,serverPort);
 
 
         panel.add(findGame);
         panel.add(help);
         panel.add(cancelFindGame);
-        panel.add(label);
+        panel.add(waitingLabel);
 
         findGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(connectThread == null || !connectThread.isAlive()) {
                     help.setVisible(false);
                     findGame.setVisible(false);
                     cancelFindGame.setVisible(true);
-                    label.setVisible(true);
-                    Thread thr = connectingThread();
-                    thr.start();
-
+                    waitingLabel.setVisible(true);
+                    connectThread = connectingThread();
+                    connectThread.start();
+                }
             }
         });
 
@@ -58,14 +64,22 @@ public class Menu extends JFrame {
                 help.setVisible(true);
                 findGame.setVisible(true);
                 cancelFindGame.setVisible(false);
-                label.setVisible(false);
+                waitingLabel.setVisible(false);
                 isCanceled = true;
 
                 try {
-                    socket.close();
+                    sout.close();
+                    sin.close();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+            }
+        });
+
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startGame(1);
             }
         });
 
@@ -79,8 +93,7 @@ public class Menu extends JFrame {
             public void run() {
                 try {
                     socket = new Socket();
-                    socket.connect(ipAddress,1000);
-
+                    socket.connect(ipAddress);
                 }
                 catch (IOException err) {
                     if(err.getMessage().equals("Connection refused"))
@@ -90,18 +103,52 @@ public class Menu extends JFrame {
                     }
                     else err.printStackTrace();
                 }
-                //if(!iscanceled && socket.isConnected())
+                    try {
+                        if(socket != null && !isCanceled && socket.isConnected() && !socket.isClosed()) {
+                            sout = socket.getOutputStream();
+                            sin = socket.getInputStream();
+                            waitingForPlayer().start();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 isCanceled = false;
             }
         });
     }
+
     private void backToMenu()
     {
             help.setVisible(true);
             findGame.setVisible(true);
             cancelFindGame.setVisible(false);
-            label.setVisible(false);
+            waitingLabel.setVisible(false);
     }
 
+    private Thread waitingForPlayer()
+    {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int player = -1;
+                    while(!isCanceled) {
+                        if ((player = sin.read()) != -1) {
+                            startGame(player);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+    }
+    private void startGame(int player)
+    {
+        Main.board.setVisible(true);
+        Main.board.setPlayer(player);
+        setVisible(false);
+        backToMenu();
+    }
 }
