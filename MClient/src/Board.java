@@ -1,22 +1,35 @@
 import javax.swing.*;
+import java.util.ArrayList;
 
 
 public class Board extends JFrame {
 
     int width,height,player = 0;
+    ArrayList<JLabel> hand = new ArrayList<>(StaticVariables.maxHandSize);
+    int handSize = 4;
+    Thread updater = upToDate();
     Board()
     {
-        height = 600;
+        height = 1000;
         width = 600;
         setFocusable(true);
         setBounds(0, 0, width, height);
-        MyMouseLis ml =  new MyMouseLis();
         JPanel panel = new JPanel();
-        //MouseListener mll = ;
+        for(int i = 0; i < StaticVariables.maxHandSize;++i)
+        {
+            MyMouseLis ml =  new MyMouseLis();
+            JLabel lbl = hand.get(i);
+            lbl.setBounds(i*(StaticVariables.cardWidth + StaticVariables.cardGap),0
+                    , StaticVariables.cardWidth, StaticVariables.cardHeight);
+            lbl.addMouseListener(ml);
+            panel.add(lbl);
+        }
+
+
         add(panel);
-        panel.addMouseListener(ml);
+        //panel.addMouseListener(ml);
     }
-    private Thread communicate()
+    private Thread upToDate()
     {
         return new Thread(new Runnable() {
             @Override
@@ -26,7 +39,9 @@ public class Board extends JFrame {
         });
     }
 
-    public void setPlayer(int player) {
+    public void StartGame(int player) {
+        setVisible(true);
         this.player = player;
+        updater.start();
     }
 }

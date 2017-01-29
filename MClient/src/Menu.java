@@ -146,9 +146,8 @@ public class Menu extends JFrame {
     }
     private void startGame(int player)
     {
-        Main.board.setVisible(true);
-        Main.board.setPlayer(player);
         setVisible(false);
         backToMenu();
+        Main.board.StartGame(player);
     }
 }
