@@ -79,7 +79,7 @@ public class Menu extends JFrame {
         help.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(1);
+                toBoard(1);
             }
         });
 
@@ -134,7 +134,8 @@ public class Menu extends JFrame {
                     int player = -1;
                     while(!isCanceled) {
                         if ((player = sin.read()) != -1) {
-                            startGame(player);
+                            toBoard(player);
+                            break;
                         }
                     }
                 } catch (IOException e) {
@@ -144,10 +145,10 @@ public class Menu extends JFrame {
         });
 
     }
-    private void startGame(int player)
+    private void toBoard(int player)
     {
         setVisible(false);
         backToMenu();
-        Main.board.StartGame(player);
+        Main.board.StartGame(player, sout, sin);
     }
 }

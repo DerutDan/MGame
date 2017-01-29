@@ -9,13 +9,12 @@ public class Weapon extends GameCard implements Serializable {
     {
         name = _name;
         at = _at;
+        type = "Weapon";
     }
 
     public int getAt() {
         return at;
     }
 
-    String getT() {
-        return "Weapon";
-    }
+
 }

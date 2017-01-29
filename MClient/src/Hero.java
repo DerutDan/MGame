@@ -5,10 +5,10 @@ public class Hero implements Serializable {
     int hp = 100;
     int attack = 5;
     int def = 0;
+    String foo = new String();
     boolean alive = true;
     Weapon weapon = new Weapon("Weapon0",0);
     Armor armor = new Armor("Armor0",0,0);
-
     void equipWeapon(Weapon _weapon)
     {
         if(weapon != null)
