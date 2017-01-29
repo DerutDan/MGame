@@ -139,7 +139,8 @@ public class Menu extends JFrame {
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    if(socket.isInputShutdown() || socket.isClosed()) System.out.println("Disconnected");
+                    else e.printStackTrace();
                 }
             }
         });

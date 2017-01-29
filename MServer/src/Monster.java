@@ -40,6 +40,12 @@ public class Monster extends GameCard implements Serializable {
         return alive;
     }
 
+    public int getHp() {
+        return hp;
+    }
 
+    public int getCharge() {
+        return charge;
+    }
 
 }

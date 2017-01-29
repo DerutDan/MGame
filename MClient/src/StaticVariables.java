@@ -7,8 +7,8 @@ public class StaticVariables {
     static int deckSize = 20;
     static int maxHandSize = 5;
     static int initHandSize = 4;
-    static int cardWidth = 50;
-    static int cardHeight = 100;
+    static int cardWidth = 100;
+    static int cardHeight = 150;
     static int cardGap = 5;
     static boolean inited = false;
     static HashMap<String,Monster> MonsterDecl = new HashMap<>();

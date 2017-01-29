@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -28,7 +29,10 @@ public class Board extends JFrame {
         for(int i = 0; i < StaticVariables.maxHandSize;++i)
         {
             MyMouseLis ml =  new MyMouseLis();
-            JLabel lbl = new JLabel("Imhere");
+            JLabel lbl = new JLabel();
+            lbl.addMouseListener(ml);
+            lbl.setLayout(null);
+            lbl.setBorder(BorderFactory.createLineBorder(Color.black));
             lbl.setBounds(i*(StaticVariables.cardWidth + StaticVariables.cardGap),0
                     , StaticVariables.cardWidth, StaticVariables.cardHeight);
 
@@ -111,7 +115,33 @@ public class Board extends JFrame {
     {
         for(int i = 0; i < hand.size();++i)
         {
-            handL.get(i).setText(hand.get(i).getName());
+            JLabel tmpL = handL.get(i);
+            switch(hand.get(i).getT())
+            {
+                case"Monster" :
+                    {
+                        Monster tmpH = (Monster)hand.get(i);
+                        tmpL.setText("<html>"+ tmpH.getName()+"<br>Charge:"+tmpH.getCharge()+"<br>Hp:"+tmpH.getHp()+"<br>Attack:"+tmpH.getAt() + "</html>");
+                        break;
+                    }
+                case"Armor" :
+                {
+                    Armor tmpH = (Armor)hand.get(i);
+                    tmpL.setText("<html>" + tmpH.getName()+"<br>Def:"+tmpH.getDef()+"<br>HpBonus"+tmpH.getHpBonus() + "</html>");
+                    break;
+                }
+                case "Weapon" :
+                {
+                    Weapon tmpH = (Weapon)hand.get(i);
+                    tmpL.setText("<html>"+tmpH.getName()+"<br>Attack:"+tmpH.getAt()+"</html>");
+                }
+            }
+
+            tmpL.setVisible(true);
+        }
+        for(int i = hand.size(); i < StaticVariables.maxHandSize;++i)
+        {
+            handL.get(i).setVisible(false);
         }
     }
     public void StartGame(int player, OutputStream sout, InputStream sin) {

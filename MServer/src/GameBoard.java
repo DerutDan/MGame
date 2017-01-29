@@ -53,7 +53,10 @@ public class GameBoard {
             din2 = new DataInputStream(sin2);
             oout2 = new ObjectOutputStream(sout2);
         } catch (IOException e) {
-            e.printStackTrace();
+            if(player1Socket.isOutputShutdown()) System.out.println("Disconnected1");
+            else e.printStackTrace();
+            if(player2Socket.isOutputShutdown()) System.out.println("Disconnected2");
+            else e.printStackTrace();
         }
 
 
@@ -307,7 +310,8 @@ public class GameBoard {
                 oout1.writeObject(monstersP2.get(i));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if(player1Socket.isOutputShutdown() || player1Socket.isClosed()) System.out.println("Disconnected1");
+            else e.printStackTrace();
         }
 
     }
@@ -344,7 +348,8 @@ public class GameBoard {
                 oout2.writeObject(monstersP1.get(i));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if(player2Socket.isOutputShutdown() || player2Socket.isClosed()) System.out.println("Disconnected2");
+            else e.printStackTrace();
         }
 
     }
@@ -371,7 +376,8 @@ public class GameBoard {
         try {
             return din1.readInt();
         } catch (IOException e) {
-            e.printStackTrace();
+            if(player1Socket.isInputShutdown()) System.out.println("Disconnected1");
+            else e.printStackTrace();
         }
         return 0;
     }
@@ -381,7 +387,8 @@ public class GameBoard {
         try {
             return din2.readInt();
         } catch (IOException e) {
-            e.printStackTrace();
+            if(player2Socket.isInputShutdown()) System.out.println("Disconnected2");
+            else e.printStackTrace();
         }
         return 0;
     }
