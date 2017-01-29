@@ -8,7 +8,7 @@ public class Weapon extends GameCard implements Serializable {
     Weapon(String _name,int _at)
     {
         name = _name;
-        at = at;
+        at = _at;
     }
 
     public int getAt() {

@@ -8,7 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class GameBoard {
     Hero P1,P2;
-    boolean gameOn = false;
+    boolean isGameOn = false;
     ArrayList<GameCard> handP1 = new ArrayList<>(),handP2 = new ArrayList<>();
     ArrayList<GameCard> deckP1,deckP2;
     ArrayList<Monster> monsterList = new ArrayList<>();
@@ -38,7 +38,7 @@ public class GameBoard {
         }
         P1 = new Hero();
         P2 = new Hero();
-        gameOn = true;
+        isGameOn = true;
 
         try {
             InputStream sin1 = player1Socket.getInputStream();
@@ -149,9 +149,6 @@ public class GameBoard {
         return handP2;
     }
 
-    public boolean isGameOn() {
-        return gameOn;
-    }
     void Phase01()
     {
        wForUpDate();
@@ -208,7 +205,7 @@ public class GameBoard {
             sum += monstersP2.get(i).getLevel();
         }
         P1.getHit(sum);
-        if(!P1.isAlive()) gameOn = false;
+        if(!P1.isAlive()) isGameOn = false;
         upToDate = false;
         Phase02();
     }
@@ -270,11 +267,11 @@ public class GameBoard {
             sum += monstersP1.get(i).getLevel();
         }
         P2.getHit(sum);
-        if(!P2.isAlive()) gameOn = false;
+        if(!P2.isAlive()) isGameOn = false;
         upToDate = false;
         Phase01();
     }
-    
+
     //P1: hp def at weap arm cmosterNum AllMonsterIndexes monsterNum AllMonsterIndexes(curhp) P2 hp def at
     void toSent1()
     {
@@ -343,10 +340,12 @@ public class GameBoard {
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
-                    toSent1();
-                    toSent2();
-                    upToDate = true;
+                while(isGameOn) {
+                    if(!upToDate) {
+                        toSent1();
+                        toSent2();
+                        upToDate = true;
+                    }
                 }
             }
         });

@@ -31,12 +31,11 @@
       <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="276" column="4" lean-forward="false" selection-start-line="276" selection-start-column="4" selection-end-line="276" selection-end-column="4" />
+            <state relative-caret-position="227">
+              <caret line="92" column="8" lean-forward="true" selection-start-line="92" selection-start-column="8" selection-end-line="94" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#GameBoard#0;class#GameBoard#0" expanded="false" />
-                <element signature="method#initAll#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#getDeck#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#takeCard#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#Phase01#0;class#GameBoard#0" expanded="false" />
@@ -49,11 +48,20 @@
                 <element signature="method#Phase32#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#toSent1#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#toSent2#0;class#GameBoard#0" expanded="false" />
-                <element signature="method#upDate#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#reader1#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#reader2#0;class#GameBoard#0" expanded="false" />
                 <element signature="method#wForUpDate#0;class#GameBoard#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Weapon.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Weapon.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="5" lean-forward="true" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -92,10 +100,10 @@
         <option value="$PROJECT_DIR$/src/Hero.java" />
         <option value="$PROJECT_DIR$/src/Monster.java" />
         <option value="$PROJECT_DIR$/src/Armor.java" />
-        <option value="$PROJECT_DIR$/src/Weapon.java" />
         <option value="$PROJECT_DIR$/src/StaticVariables.java" />
         <option value="$PROJECT_DIR$/src/Main.java" />
         <option value="$PROJECT_DIR$/src/GameBoard.java" />
+        <option value="$PROJECT_DIR$/src/Weapon.java" />
       </list>
     </option>
   </component>
@@ -394,7 +402,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -454,7 +462,6 @@
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#GameBoard#0;class#GameBoard#0" expanded="false" />
-            <element signature="method#initAll#0;class#GameBoard#0" expanded="false" />
             <element signature="method#getDeck#0;class#GameBoard#0" expanded="false" />
             <element signature="method#takeCard#0;class#GameBoard#0" expanded="false" />
             <element signature="method#Phase01#0;class#GameBoard#0" expanded="false" />
@@ -467,7 +474,6 @@
             <element signature="method#Phase32#0;class#GameBoard#0" expanded="false" />
             <element signature="method#toSent1#0;class#GameBoard#0" expanded="false" />
             <element signature="method#toSent2#0;class#GameBoard#0" expanded="false" />
-            <element signature="method#upDate#0;class#GameBoard#0" expanded="false" />
             <element signature="method#reader1#0;class#GameBoard#0" expanded="false" />
             <element signature="method#reader2#0;class#GameBoard#0" expanded="false" />
             <element signature="method#wForUpDate#0;class#GameBoard#0" expanded="false" />
@@ -479,6 +485,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="37" lean-forward="false" selection-start-line="3" selection-start-column="37" selection-end-line="3" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -498,14 +505,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="59" lean-forward="false" selection-start-line="5" selection-start-column="59" selection-end-line="5" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Weapon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="60" lean-forward="false" selection-start-line="5" selection-start-column="60" selection-end-line="5" selection-end-column="60" />
           <folding />
         </state>
       </provider>
@@ -544,14 +543,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Weapon.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="5" lean-forward="true" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="276" column="4" lean-forward="false" selection-start-line="276" selection-start-column="4" selection-end-line="276" selection-end-column="4" />
+        <state relative-caret-position="227">
+          <caret line="92" column="8" lean-forward="true" selection-start-line="92" selection-start-column="8" selection-end-line="94" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#GameBoard#0;class#GameBoard#0" expanded="false" />
-            <element signature="method#initAll#0;class#GameBoard#0" expanded="false" />
             <element signature="method#getDeck#0;class#GameBoard#0" expanded="false" />
             <element signature="method#takeCard#0;class#GameBoard#0" expanded="false" />
             <element signature="method#Phase01#0;class#GameBoard#0" expanded="false" />
@@ -564,7 +570,6 @@
             <element signature="method#Phase32#0;class#GameBoard#0" expanded="false" />
             <element signature="method#toSent1#0;class#GameBoard#0" expanded="false" />
             <element signature="method#toSent2#0;class#GameBoard#0" expanded="false" />
-            <element signature="method#upDate#0;class#GameBoard#0" expanded="false" />
             <element signature="method#reader1#0;class#GameBoard#0" expanded="false" />
             <element signature="method#reader2#0;class#GameBoard#0" expanded="false" />
             <element signature="method#wForUpDate#0;class#GameBoard#0" expanded="false" />
