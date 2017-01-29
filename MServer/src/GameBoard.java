@@ -1,9 +1,10 @@
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+
+import static java.lang.Thread.sleep;
 
 public class GameBoard {
     Hero P1,P2;
@@ -17,13 +18,16 @@ public class GameBoard {
     ArrayList<Monster> cMonstersP2 = new ArrayList<>();
     ArrayList<Monster> monstersP1 = new ArrayList<>();
     ArrayList<Monster> monstersP2 = new ArrayList<>();
+    Socket player1Socket,player2Socket;
     ObjectOutputStream oout1,oout2;
-    DataInputStream oin1,oin2;
+    DataInputStream din1,din2;
     volatile boolean upToDate = false;
     Thread updater = upDate();
     Random rand = new Random();
-    GameBoard(ObjectOutputStream _oout1,ObjectOutputStream _oout2, DataInputStream _oin1,DataInputStream _oin2)
+    GameBoard(Socket _player1Socket,Socket _player2ocket)
     {
+        player1Socket = _player1Socket;
+        player2Socket = _player2ocket;
         initAll();
         deckP1 = getDeck();
         deckP2 = getDeck();
@@ -36,10 +40,22 @@ public class GameBoard {
         P2 = new Hero();
         gameOn = true;
 
-        oout1 = _oout1;
-        oout2 = _oout2;
-        oin1 = _oin1;
-        oin2 = _oin2;
+        try {
+            InputStream sin1 = player1Socket.getInputStream();
+            OutputStream sout1 = player1Socket.getOutputStream();
+            sout1.write(1);
+            din1 = new DataInputStream(sin1);
+            oout1 = new ObjectOutputStream(sout1);
+            InputStream sin2 = player2Socket.getInputStream();
+            OutputStream sout2 = player2Socket.getOutputStream();
+            sout2.write(2);
+            din2 = new DataInputStream(sin2);
+            oout2 = new ObjectOutputStream(sout2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -138,6 +154,7 @@ public class GameBoard {
     }
     void Phase01()
     {
+       wForUpDate();
         if(handP1.size() <=StaticVariables.handSize) {
             handP1.add(takeCard(deckP1));
         }
@@ -150,9 +167,13 @@ public class GameBoard {
             }
         }
         upToDate = false;
+        Phase11();
     }
-    void Phase11(int cardIndex)
+
+    void Phase11()
     {
+        wForUpDate();
+        int cardIndex = reader1();
         GameCard out = handP1.get(cardIndex);
         String type = out.type;
         switch(type)
@@ -162,9 +183,12 @@ public class GameBoard {
             case "Armor" : { P1.equipArmor((Armor)out); break;}
         }
         upToDate = false;
+        Phase21();
     }
-    void Phase21(int cardIndex)
+
+    void Phase21()
     {
+        int cardIndex = reader1();
         if(cardIndex == -1 || cardIndex >= monstersP2.size())
             return;
         Monster m = monstersP2.get(cardIndex);
@@ -172,9 +196,12 @@ public class GameBoard {
         m.getHit(P1.getAt());
         if(!m.isAlive()) monstersP2.remove(cardIndex);
         upToDate = false;
+        Phase31();
     }
+
     void Phase31()
     {
+        wForUpDate();
         int sum = 0;
         for(int  i = 0 ; i < monstersP2.size();++i)
         {
@@ -183,10 +210,13 @@ public class GameBoard {
         P1.getHit(sum);
         if(!P1.isAlive()) gameOn = false;
         upToDate = false;
+        Phase02();
     }
+
     //P2 phases
     void Phase02()
     {
+        wForUpDate();
         if(handP2.size() <=StaticVariables.handSize){
             handP2.add(takeCard(deckP2));
         }
@@ -199,9 +229,13 @@ public class GameBoard {
             }
         }
         upToDate = false;
+        Phase12();
     }
-    void Phase12(int cardIndex)
+
+    void Phase12()
     {
+        wForUpDate();
+        int cardIndex = reader2();
         GameCard out = handP2.get(cardIndex);
         String type = out.type;
         switch(type)
@@ -211,9 +245,13 @@ public class GameBoard {
             case "Armor" : { P2.equipArmor((Armor)out); break;}
         }
         upToDate = false;
+        Phase22();
     }
-    void Phase22(int cardIndex)
+
+    void Phase22()
     {
+        wForUpDate();
+        int cardIndex = reader2();
         if(cardIndex == -1 || cardIndex >= monstersP1.size())
             return;
         Monster m = monstersP1.get(cardIndex);
@@ -222,8 +260,10 @@ public class GameBoard {
         if(!m.isAlive()) monstersP1.remove(cardIndex);
         upToDate = false;
     }
+
     void Phase32()
     {
+        wForUpDate();
         int sum = 0;
         for(int  i = 0 ; i < monstersP1.size();++i)
         {
@@ -232,7 +272,9 @@ public class GameBoard {
         P2.getHit(sum);
         if(!P2.isAlive()) gameOn = false;
         upToDate = false;
+        Phase01();
     }
+    
     //P1: hp def at weap arm cmosterNum AllMonsterIndexes monsterNum AllMonsterIndexes(curhp) P2 hp def at
     void toSent1()
     {
@@ -264,6 +306,7 @@ public class GameBoard {
         }
 
     }
+
     void toSent2()
     {
         try {
@@ -294,20 +337,53 @@ public class GameBoard {
         }
 
     }
-    Thread upDate() {
+
+    Thread upDate()
+    {
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                toSent1();
-                toSent2();
-                upToDate = true;
+                while(true) {
+                    toSent1();
+                    toSent2();
+                    upToDate = true;
+                }
             }
         });
 
     }
-    public void StartGame()
-    {
 
+    int reader1()
+    {
+        try {
+            return din1.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
+    int reader2()
+    {
+        try {
+            return din2.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void StartGame()
+    {
+        updater.start();
+    }
+
+    void wForUpDate()
+    {
+        while(!upToDate) try {
+            sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
