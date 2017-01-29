@@ -8,9 +8,11 @@ public class Armor extends GameCard implements Serializable {
     int hpBonus;
     Armor(String _name,int _def,int _hpBonus)
     {
-        name = name;
+        name = _name;
         def = _def;
         hpBonus = _hpBonus;
+        type = "Armor";
+
     }
 
     public int getDef() {

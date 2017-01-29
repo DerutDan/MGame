@@ -37,6 +37,7 @@ public class GameBoard {
             handP2.add(takeCard(deckP2));
         }
         P1 = new Hero();
+        P1.foo = "Asd";
         P2 = new Hero();
         isGameOn = true;
 
@@ -256,6 +257,7 @@ public class GameBoard {
         m.getHit(P2.getAt());
         if(!m.isAlive()) monstersP1.remove(cardIndex);
         upToDate = false;
+        Phase32();
     }
 
     void Phase32()
@@ -278,6 +280,12 @@ public class GameBoard {
         try {
             oout1.writeObject(P1);
             oout1.writeObject(P2);
+            oout1.writeInt(handP1.size());
+            for(int i = 0; i < handP1.size();++i)
+            {
+                oout1.writeUTF(handP1.get(i).getT());
+                oout1.writeObject(handP1.get(i));
+            }
             oout1.writeInt(cMonstersP1.size());
             for(int i = 0; i < cMonstersP1.size();++i)
             {
@@ -309,10 +317,16 @@ public class GameBoard {
         try {
             oout2.writeObject(P2);
             oout2.writeObject(P1);
+            oout2.writeInt(handP2.size());
+            for(int i = 0; i < handP2.size();++i)
+            {
+                oout2.writeUTF(handP2.get(i).getT());
+                oout2.writeObject(handP2.get(i));
+            }
             oout2.writeInt(cMonstersP2.size());
             for(int i = 0; i < cMonstersP2.size();++i)
             {
-                oout1.writeObject(cMonstersP2.get(i));
+                oout2.writeObject(cMonstersP2.get(i));
             }
             oout2.writeInt(monstersP2.size());
             for(int i = 0; i < monstersP2.size();++i)
@@ -374,12 +388,15 @@ public class GameBoard {
 
     public void StartGame()
     {
+
         updater.start();
+        Phase01();
     }
 
     void wForUpDate()
     {
-        while(!upToDate) try {
+        while(!upToDate)
+            try {
             sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
