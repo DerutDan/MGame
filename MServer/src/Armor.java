@@ -1,0 +1,21 @@
+/**
+ * Created by Danila on 25.01.17.
+ */
+public class Armor extends GameCard {
+    int def;
+    int hpBonus;
+    Armor(String _name,int _def,int _hpBonus)
+    {
+        name = name;
+        def = _def;
+        hpBonus = _hpBonus;
+    }
+
+    public int getDef() {
+        return def;
+    }
+
+    public int getHpBonus() {
+        return hpBonus;
+    }
+}
