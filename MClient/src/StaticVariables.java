@@ -10,6 +10,8 @@ public class StaticVariables {
     static int cardWidth = 100;
     static int cardHeight = 150;
     static int cardGap = 5;
+    static int skipButtonWidth = 100;
+    static int skipButtonHeight = 45;
     static boolean inited = false;
     static HashMap<String,Monster> MonsterDecl = new HashMap<>();
     static HashMap<String,Weapon> WeaponDecl = new HashMap<>();

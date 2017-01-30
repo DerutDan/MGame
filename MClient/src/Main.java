@@ -3,7 +3,7 @@ public class Main {
     static Board board;
     public static void main(String[] args) {
     menu = new Menu();
-    board = new Board();
+
 
     }
 }

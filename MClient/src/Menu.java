@@ -6,15 +6,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Menu extends JFrame {
     private int serverPort = 5555,height,width;
     private String address = "192.168.1.181";
-    Socket socket;
+    Socket socket,redun;
     private JButton findGame,help,cancelFindGame;
     private JLabel waitingLabel;
     private Thread connectThread;
     private InetSocketAddress ipAddress;
+    Thread waiting;
     OutputStream sout;
     InputStream sin;
     volatile boolean isCanceled = false;
@@ -48,6 +50,7 @@ public class Menu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(connectThread == null || !connectThread.isAlive()) {
+                    isCanceled = false;
                     help.setVisible(false);
                     findGame.setVisible(false);
                     cancelFindGame.setVisible(true);
@@ -61,6 +64,7 @@ public class Menu extends JFrame {
         cancelFindGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                waiting.interrupt();
                 help.setVisible(true);
                 findGame.setVisible(true);
                 cancelFindGame.setVisible(false);
@@ -68,10 +72,14 @@ public class Menu extends JFrame {
                 isCanceled = true;
 
                 try {
-                    sout.close();
-                    sin.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                    sout.write(-1);
+                    socket.close();
+                } catch(SocketException err1){
+                    System.out.println("Disconnected1");
+                    err1.printStackTrace();
+                }
+                catch (IOException err2) {
+                    err2.printStackTrace();
                 }
             }
         });
@@ -107,12 +115,12 @@ public class Menu extends JFrame {
                         if(socket != null && !isCanceled && socket.isConnected() && !socket.isClosed()) {
                             sout = socket.getOutputStream();
                             sin = socket.getInputStream();
-                            waitingForPlayer().start();
+                            waiting = waitingForPlayer();
+                            waiting.start();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                isCanceled = false;
             }
         });
     }
@@ -131,15 +139,21 @@ public class Menu extends JFrame {
             @Override
             public void run() {
                 try {
-                    int player = -1;
-                    while(!isCanceled) {
-                        if ((player = sin.read()) != -1) {
-                            toBoard(player);
-                            break;
+                    int player = 0;
+
+
+                        while((player = sin.read()) == 3) {
+                            System.out.println(player);
+                            if(player == 3) sout.write(3);
                         }
-                    }
+                        if(player == 1 || player == 2) toBoard(player);
                 } catch (IOException e) {
-                    if(socket.isInputShutdown() || socket.isClosed()) System.out.println("Disconnected");
+                    System.out.println("Was there");
+                    if(socket.isClosed())
+                    {
+                        System.out.println("Disconnected");
+                        backToMenu();
+                    }
                     else e.printStackTrace();
                 }
             }
@@ -148,8 +162,9 @@ public class Menu extends JFrame {
     }
     private void toBoard(int player)
     {
+        Main.board = new Board(sout, sin);
         setVisible(false);
         backToMenu();
-        Main.board.StartGame(player, sout, sin);
+        Main.board.StartGame(player);
     }
 }
